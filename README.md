@@ -32,6 +32,7 @@ Throughout training, the training loss curves, value function plots, and model c
 * `dynamics/dynamics.py`: a new "Dubins2D" class was added
 * `experiments/experiments.py`: a new plotting case when z-axis = -1 for visualizing a 1x3 plot where columns are for different give time, t.
 
+```
 ## Citation
 @software{deepreach2024,
   author = {Lin, Albert and Feng, Zeyuan and Borquez, Javier and Bansal, Somil},
