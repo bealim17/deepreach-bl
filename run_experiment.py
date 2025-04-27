@@ -44,7 +44,10 @@ if (mode == 'all') or (mode == 'train'):
         p.add_argument('--' + param, type=experiment_params[param].annotation, required=True, help='special experiment_class argument')
 
     # simulation data source options
-    p.add_argument('--device', type=str, default='cuda:0', required=False, help='CUDA Device to use.')
+    ## Removed: p.add_argument('--device', type=str, default='cuda:0', required=False, help='CUDA Device to use.')
+    ## Added following 2 lines:
+    default_device = "mps" if torch.backends.mps.is_available() else "cpu" # to replace CUDA usage
+    p.add_argument('--device', type=str, default=default_device, required=False, help='Device to use: MPS or CPU.') # to replace CUDA usage
     p.add_argument('--numpoints', type=int, default=65000, help='Number of points in simulation data source __getitem__.')
     p.add_argument('--pretrain', action='store_true', default=False, required=False, help='Pretrain dirichlet conditions')
     p.add_argument('--pretrain_iters', type=int, default=2000, required=False, help='Number of pretrain iterations')

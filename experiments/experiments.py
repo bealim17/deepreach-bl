@@ -58,24 +58,46 @@ class Experiment(ABC):
         zs = torch.linspace(z_min, z_max, z_resolution)
         xys = torch.cartesian_prod(xs, ys)
         
-        fig = plt.figure(figsize=(5*len(times), 5*len(zs)))
-        for i in range(len(times)):
-            for j in range(len(zs)):
-                coords = torch.zeros(x_resolution*y_resolution, self.dataset.dynamics.state_dim + 1)
+        if plot_config['z_axis_idx'] > 1:
+            fig = plt.figure(figsize=(5*len(times), 5*len(zs)))
+            for i in range(len(times)):
+                for j in range(len(zs)):
+                    coords = torch.zeros(x_resolution*y_resolution, self.dataset.dynamics.state_dim + 1)
+                    coords[:, 0] = times[i]
+                    coords[:, 1:] = torch.tensor(plot_config['state_slices'])
+                    coords[:, 1 + plot_config['x_axis_idx']] = xys[:, 0]
+                    coords[:, 1 + plot_config['y_axis_idx']] = xys[:, 1]
+                    coords[:, 1 + plot_config['z_axis_idx']] = zs[j]
+
+                    with torch.no_grad():
+                        model_results = self.model({'coords': self.dataset.dynamics.coord_to_input(coords.to(device))})
+                        values = self.dataset.dynamics.io_to_value(model_results['model_in'].detach(), model_results['model_out'].squeeze(dim=-1).detach())
+                    
+                    ax = fig.add_subplot(len(times), len(zs), (j+1) + i*len(zs))
+                    ax.set_title('t = %0.2f, %s = %0.2f' % (times[i], plot_config['state_labels'][plot_config['z_axis_idx']], zs[j]))
+                    s = ax.imshow(1*(values.detach().cpu().numpy().reshape(x_resolution, y_resolution).T <= 0), cmap='bwr', origin='lower', extent=(-1., 1., -1., 1.))
+                    fig.colorbar(s) 
+        elif plot_config['z_axis_idx'] == -1:
+            fig = plt.figure(figsize=(5 * len(times), 5))
+            for i in range(len(times)):
+                coords = torch.zeros(x_resolution * y_resolution, self.dataset.dynamics.state_dim + 1)
                 coords[:, 0] = times[i]
-                coords[:, 1:] = torch.tensor(plot_config['state_slices'])
+                coords[:, 1:] = torch.tensor(plot_config['state_slices'])  # Fill defaults
                 coords[:, 1 + plot_config['x_axis_idx']] = xys[:, 0]
                 coords[:, 1 + plot_config['y_axis_idx']] = xys[:, 1]
-                coords[:, 1 + plot_config['z_axis_idx']] = zs[j]
 
                 with torch.no_grad():
                     model_results = self.model({'coords': self.dataset.dynamics.coord_to_input(coords.to(device))})
                     values = self.dataset.dynamics.io_to_value(model_results['model_in'].detach(), model_results['model_out'].squeeze(dim=-1).detach())
-                
-                ax = fig.add_subplot(len(times), len(zs), (j+1) + i*len(zs))
-                ax.set_title('t = %0.2f, %s = %0.2f' % (times[i], plot_config['state_labels'][plot_config['z_axis_idx']], zs[j]))
-                s = ax.imshow(1*(values.detach().cpu().numpy().reshape(x_resolution, y_resolution).T <= 0), cmap='bwr', origin='lower', extent=(-1., 1., -1., 1.))
-                fig.colorbar(s) 
+
+                ax = fig.add_subplot(1, len(times), i + 1)
+                ax.set_title('t = %0.2f' % times[i])
+                s = ax.imshow(
+                    (values.detach().cpu().numpy().reshape(x_resolution, y_resolution).T <= 0).astype(float),
+                    cmap='bwr', origin='lower', extent=(x_min, x_max, y_min, y_max)
+                )
+                fig.colorbar(s)
+
         fig.savefig(save_path)
         if self.use_wandb:
             wandb.log({
