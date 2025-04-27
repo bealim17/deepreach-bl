@@ -43,8 +43,9 @@ For the assessment's part 2, I ran:
 python run_experiment.py --mode train --experiment_class DeepReach --dynamics_class Dubins2D --experiment_name dubins2d_0p25_reach --minWith target --goalR 0.25 --velocity 1 --angle_alpha_factor 1.2 --set_mode reach --use_wandb --wandb_project deepreach_test_lambda --wandb_entity bealim-stanford --wandb_group assessment --wandb_name 2dtest_reach --epochs_til_ckpt 50 --steps_til_summary 50 --num_epochs 12000
 ```
 
-```
+
 ## Citation
+```
 @software{deepreach2024,
   author = {Lin, Albert and Feng, Zeyuan and Borquez, Javier and Bansal, Somil},
   title = {{DeepReach Repository}},
