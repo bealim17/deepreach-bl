@@ -1,7 +1,7 @@
 # DeepReach: A Deep Learning Approach to High-Dimensional Reachability
 ### [Project Page](http://people.eecs.berkeley.edu/~somil/index.html) | [Paper](https://arxiv.org/pdf/2011.02082.pdf)<br>
 
-Repository Maintainers<br>
+Original Repository (https://github.com/smlbansal/deepreach/tree/public_release) Maintainers<br>
 [Albert Lin](https://www.linkedin.com/in/albertkuilin/),
 [Zeyuan Feng](https://thezeyuanfeng.github.io/),
 [Javier Borquez](https://javierborquez.github.io/),
