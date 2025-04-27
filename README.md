@@ -32,6 +32,17 @@ Throughout training, the training loss curves, value function plots, and model c
 * `dynamics/dynamics.py`: a new "Dubins2D" class was added
 * `experiments/experiments.py`: a new plotting case when z-axis = -1 for visualizing a 1x3 plot where columns are for different give time, t.
 
+## Running DeepReach Assessment
+For this assessment's part 1, I ran:
+```
+python run_experiment.py --mode train --experiment_class DeepReach --dynamics_class Dubins2D --experiment_name dubins2d_0p5_avoid --minWith target --goalR 0.5 --velocity 1 --angle_alpha_factor 1.2 --set_mode avoid --use_wandb --wandb_project deepreach_test_lambda --wandb_entity bealim-stanford --wandb_group assessment --wandb_name 2dtest_avoid --epochs_til_ckpt 50 --steps_til_summary 50 --num_epochs 4000
+```
+
+For the assessment's part 2, I ran:
+```
+python run_experiment.py --mode train --experiment_class DeepReach --dynamics_class Dubins2D --experiment_name dubins2d_0p25_reach --minWith target --goalR 0.25 --velocity 1 --angle_alpha_factor 1.2 --set_mode reach --use_wandb --wandb_project deepreach_test_lambda --wandb_entity bealim-stanford --wandb_group assessment --wandb_name 2dtest_reach --epochs_til_ckpt 50 --steps_til_summary 50 --num_epochs 12000
+```
+
 ```
 ## Citation
 @software{deepreach2024,
